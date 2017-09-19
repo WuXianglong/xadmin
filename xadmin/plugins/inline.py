@@ -230,7 +230,7 @@ class InlineModelAdmin(ModelFormAdminView):
                     for readonly_field in readonly_fields:
                         value = None
                         label = None
-                        if readonly_field in inst._meta.get_all_field_names():
+                        if readonly_field in [f.name for f in inst._meta.get_fields()]:
                             label = inst._meta.get_field(readonly_field).verbose_name
                             value = smart_text(getattr(inst, readonly_field))
                         elif inspect.ismethod(getattr(inst, readonly_field, None)):
