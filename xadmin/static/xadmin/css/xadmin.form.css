@@ -8,8 +8,8 @@ select.selectmultiple {
   width: 100%;
 }
 .select2-container.form-control{
-  padding: 0px;
-  border: 0px;
+  padding: 0;
+  border: 0;
 }
 .select2-container .select2-choice {
   height: 35px;
@@ -32,7 +32,7 @@ select.selectmultiple {
   margin-bottom: 5px;
 }
 .controls {
-  padding: 0px 15px 0px 15px;
+  padding: 0 15px 0 15px;
 }
 .controls:before,
 .controls:after {
@@ -62,20 +62,20 @@ select.selectmultiple {
 }
 
 .help-block {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .form-row .row {
-  margin: 0px !important;
+  margin: 0 !important;
 }
 
 .fieldset .panel-body {
-  padding-bottom: 0px;
+  padding-bottom: 0;
 }
 
 @media (min-width: 768px) {
 
-  .text-field, 
+  .text-field,
   .textinput,
   .url-field,
   select,
@@ -87,7 +87,7 @@ select.selectmultiple {
   }
   .input-group.date{ max-width: 300px;}
   .input-group.time{ max-width: 180px;}
-  .int-field {
+  .int-field, .float-field {
     max-width: 100px;
   }
   .datetime > .input-group {
@@ -95,7 +95,7 @@ select.selectmultiple {
     margin-right: 5px;
   }
   .datetime > .input-group:last-child {
-    margin-right: 0px;
+    margin-right: 0;
   }
   select.selectmultiple {
     max-width: 350px;
@@ -107,7 +107,7 @@ select.selectmultiple {
   .form-actions.fixed{
     position:fixed;
     _position:absolute;
-    bottom:0px;
+    bottom:0;
     z-index:295;
     margin-left: -10px;
     -webkit-box-shadow: 2px 2px 16px rgba(0, 0, 0, 0.5);
@@ -140,9 +140,9 @@ select.selectmultiple {
     margin-bottom: 24px;
   }
   .form-horizontal .form-inline .form-group {
-    margin: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
   .form-horizontal .fieldset .panel-body {
     padding-top: 24px;

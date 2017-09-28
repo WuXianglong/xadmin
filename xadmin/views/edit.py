@@ -26,7 +26,7 @@ from .base import ModelAdminView, filter_hook, csrf_protect_m
 FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateTimeField: {
         'form_class': forms.SplitDateTimeField,
-        'widget': widgets.AdminSplitDateTime
+        'widget': widgets.AdminSplitDateTime,
     },
     models.DateField: {'widget': widgets.AdminDateWidget},
     models.TimeField: {'widget': widgets.AdminTimeWidget},
@@ -34,6 +34,7 @@ FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.URLField: {'widget': widgets.AdminURLFieldWidget},
     models.IntegerField: {'widget': widgets.AdminIntegerFieldWidget},
     models.BigIntegerField: {'widget': widgets.AdminIntegerFieldWidget},
+    models.FloatField: {'widget': widgets.AdminFloatFieldWidget},
     models.CharField: {'widget': widgets.AdminTextInputWidget},
     models.IPAddressField: {'widget': widgets.AdminTextInputWidget},
     models.ImageField: {'widget': widgets.AdminFileWidget},
