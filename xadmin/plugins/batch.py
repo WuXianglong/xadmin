@@ -1,4 +1,3 @@
-
 import copy
 from django import forms
 from django.db import models
@@ -40,15 +39,15 @@ class ChangeFieldWidgetWrapper(forms.Widget):
         output = []
         is_required = self.widget.is_required
         output.append(u'<label class="btn btn-info btn-xs">'
-            '<input type="checkbox" class="batch-field-checkbox" name="%s" value="%s"%s/> %s</label>' %
-            (BATCH_CHECKBOX_NAME, name, (is_required and ' checked="checked"' or ''), _('Change this field')))
+                      u'<input type="checkbox" class="batch-field-checkbox" name="%s" value="%s"%s/> %s</label>' %
+                      (BATCH_CHECKBOX_NAME, name, (is_required and ' checked="checked"' or ''), _('Change this field')))
         output.extend([('<div class="control-wrap" style="margin-top: 10px;%s" id="id_%s_wrap_container">' %
-            ((not is_required and 'display: none;' or ''), name)),
-            self.widget.render(name, value, attrs), '</div>'])
+                        ((not is_required and 'display: none;' or ''), name)),
+                       self.widget.render(name, value, attrs), '</div>'])
         return mark_safe(u''.join(output))
 
     def build_attrs(self, extra_attrs=None, **kwargs):
-        "Helper function for building an attribute dictionary."
+        """Helper function for building an attribute dictionary."""
         self.attrs = self.widget.build_attrs(extra_attrs=None, **kwargs)
         return self.attrs
 
@@ -57,6 +56,7 @@ class ChangeFieldWidgetWrapper(forms.Widget):
 
     def id_for_label(self, id_):
         return self.widget.id_for_label(id_)
+
 
 class BatchChangeAction(BaseActionView):
 
@@ -77,7 +77,7 @@ class BatchChangeAction(BaseActionView):
         fields = self.opts.fields + self.opts.many_to_many
         for f in fields:
             if not f.editable or isinstance(f, models.AutoField) \
-                    or not f.name in cleaned_data:
+                    or f.name not in cleaned_data:
                 continue
             data[f] = cleaned_data[f.name]
 

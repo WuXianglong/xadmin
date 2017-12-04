@@ -184,12 +184,6 @@ class ModelFormAdminView(ModelAdminView):
 
         return modelform_factory(self.model, **defaults)
 
-        try:
-            return modelform_factory(self.model, **defaults)
-        except FieldError as e:
-            raise FieldError('%s. Check fields/fieldsets/exclude attributes of class %s.'
-                             % (e, self.__class__.__name__))
-
     @filter_hook
     def get_form_layout(self):
         layout = copy.deepcopy(self.form_layout)
@@ -423,9 +417,11 @@ class CreateAdminView(ModelFormAdminView):
         """
         request = self.request
 
-        msg = _(
-            'The %(name)s "%(obj)s" was added successfully.') % {'name': force_text(self.opts.verbose_name),
-                                                                 'obj': "<a class='alert-link' href='%s'>%s</a>" % (self.model_admin_url('change', self.new_obj._get_pk_val()), force_text(self.new_obj))}
+        msg = _('The %(name)s "%(obj)s" was added successfully.') % {
+            'name': force_text(self.opts.verbose_name),
+            'obj': "<a class='alert-link' href='%s'>%s</a>" %
+                   (self.model_admin_url('change', self.new_obj._get_pk_val()), force_text(self.new_obj))
+        }
 
         if "_continue" in request.POST:
             self.message_user(
@@ -433,7 +429,8 @@ class CreateAdminView(ModelFormAdminView):
             return self.model_admin_url('change', self.new_obj._get_pk_val())
 
         if "_addanother" in request.POST:
-            self.message_user(msg + ' ' + (_("You may add another %s below.") % force_text(self.opts.verbose_name)), 'success')
+            self.message_user(msg + ' ' + (_("You may add another %s below.") % force_text(self.opts.verbose_name)),
+                              'success')
             return request.path
         else:
             self.message_user(msg, 'success')

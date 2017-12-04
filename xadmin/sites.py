@@ -1,18 +1,11 @@
-import sys
 from functools import update_wrapper
 from future.utils import iteritems
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.base import ModelBase
-from django.utils import six
 from django.views.decorators.cache import never_cache
 from django.template.engine import Engine
 import inspect
-
-if six.PY2 and sys.getdefaultencoding() == 'ascii':
-    import imp
-    imp.reload(sys)
-    sys.setdefaultencoding("utf-8")
 
 
 class AlreadyRegistered(Exception):
@@ -114,7 +107,8 @@ class AdminSite(object):
                     # which causes issues later on.
                     options['__module__'] = __name__
 
-                admin_class = type(str("%s%sAdmin" % (model._meta.app_label, model._meta.model_name)), (admin_class,), options or {})
+                admin_class = type(str("%s%sAdmin" % (model._meta.app_label, model._meta.model_name)),
+                                   (admin_class,), options or {})
                 admin_class.model = model
                 admin_class.order = self.model_admins_order
                 self.model_admins_order += 1
@@ -177,7 +171,8 @@ class AdminSite(object):
         if not ('django.contrib.auth.context_processors.auth' in default_template_engine.context_processors or
                 'django.core.context_processors.auth' in default_template_engine.context_processors):
             raise ImproperlyConfigured("Put 'django.contrib.auth.context_processors.auth' "
-                                       "in your TEMPLATE_CONTEXT_PROCESSORS setting in order to use the admin application.")
+                                       "in your TEMPLATE_CONTEXT_PROCESSORS setting in order"
+                                       " to use the admin application.")
 
     def admin_view(self, view, cacheable=False):
         """
@@ -233,7 +228,8 @@ class AdminSite(object):
                 bases = [plugin_class]
                 for oc in option_classes:
                     attrs.update(self._get_merge_attrs(oc, plugin_class))
-                    meta_class = getattr(oc, plugin_class.__name__, getattr(oc, plugin_class.__name__.replace('Plugin', ''), None))
+                    meta_class = getattr(oc, plugin_class.__name__,
+                                         getattr(oc, plugin_class.__name__.replace('Plugin', ''), None))
                     if meta_class:
                         bases.insert(0, meta_class)
                 if attrs:

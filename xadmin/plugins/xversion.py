@@ -19,7 +19,10 @@ from xadmin.plugins.actions import BaseActionView
 from xadmin.plugins.inline import InlineModelAdmin
 from xadmin.sites import site
 from xadmin.util import unquote, quote, model_format_dict, is_related_field2
-from xadmin.views import BaseAdminPlugin, ModelAdminView, CreateAdminView, UpdateAdminView, DetailAdminView, ModelFormAdminView, DeleteAdminView, ListAdminView
+from xadmin.views import (
+    BaseAdminPlugin, ModelAdminView, CreateAdminView, UpdateAdminView, DetailAdminView,
+    ModelFormAdminView, DeleteAdminView, ListAdminView
+)
 from xadmin.views.base import csrf_protect_m, filter_hook
 from xadmin.views.detail import DetailAdminUtil
 from reversion.models import Revision, Version
@@ -79,11 +82,13 @@ def register_models(admin_site=None):
         if getattr(admin, 'reversion_enable', False):
             _register_model(admin, model)
 
+
 @contextmanager
 def do_create_revision(request):
     with create_revision():
         set_user(request.user)
         yield
+
 
 class ReversionPlugin(BaseAdminPlugin):
 
@@ -125,7 +130,8 @@ class ReversionPlugin(BaseAdminPlugin):
     # Block Views
     def block_top_toolbar(self, context, nodes):
         recoverlist_url = self.admin_view.model_admin_url('recoverlist')
-        nodes.append(mark_safe('<div class="btn-group"><a class="btn btn-default btn-sm" href="%s"><i class="fa fa-trash-o"></i> %s</a></div>' % (recoverlist_url, _(u"Recover"))))
+        nodes.append(mark_safe('<div class="btn-group"><a class="btn btn-default btn-sm" href="%s"><i class="fa '
+                               'fa-trash-o"></i> %s</a></div>' % (recoverlist_url, _(u"Recover"))))
 
     def block_nav_toggles(self, context, nodes):
         obj = getattr(
@@ -133,7 +139,8 @@ class ReversionPlugin(BaseAdminPlugin):
         if obj:
             revisionlist_url = self.admin_view.model_admin_url(
                 'revisionlist', quote(obj.pk))
-            nodes.append(mark_safe('<a href="%s" class="navbar-toggle pull-right"><i class="fa fa-calendar"></i></a>' % revisionlist_url))
+            nodes.append(mark_safe('<a href="%s" class="navbar-toggle pull-right"><i class="fa fa-calendar">'
+                                   '</i></a>' % revisionlist_url))
 
     def block_nav_btns(self, context, nodes):
         obj = getattr(
@@ -141,7 +148,9 @@ class ReversionPlugin(BaseAdminPlugin):
         if obj:
             revisionlist_url = self.admin_view.model_admin_url(
                 'revisionlist', quote(obj.pk))
-            nodes.append(mark_safe('<a href="%s" class="btn btn-default"><i class="fa fa-calendar"></i> <span>%s</span></a>' % (revisionlist_url, _(u'History'))))
+            nodes.append(mark_safe('<a href="%s" class="btn btn-default"><i class="fa fa-calendar"></i> <span>%s'
+                                   '</span></a>' % (revisionlist_url, _(u'History'))))
+
 
 # action revision
 class ActionRevisionPlugin(BaseAdminPlugin):
@@ -318,7 +327,7 @@ class RevisionListView(BaseReversionView):
             if type(value_a) in (list, tuple) and type(value_b) in (list, tuple) \
                     and len(value_a) == len(value_b) and is_diff:
                 is_diff = False
-                for i in xrange(len(value_a)):
+                for i in range(len(value_a)):
                     if value_a[i] != value_a[i]:
                         is_diff = True
                         break
@@ -380,8 +389,10 @@ class DiffField(Field):
     def render(self, form, form_style, context, template_pack=TEMPLATE_PACK, **kwargs):
         html = ''
         for field in self.fields:
-            html += ('<div class="diff_field" rel="tooltip"><textarea class="org-data" style="display:none;">%s</textarea>%s</div>' %
-                    (_('Current: %s') % self.attrs.pop('orgdata', ''), render_field(field, form, form_style, context, template_pack=template_pack, attrs=self.attrs)))
+            html += ('<div class="diff_field" rel="tooltip"><textarea class="org-data" style="display:none;">%s'
+                     '</textarea>%s</div>' % (_('Current: %s') % self.attrs.pop('orgdata', ''),
+                                              render_field(field, form, form_style, context,
+                                                           template_pack=template_pack, attrs=self.attrs)))
         return html
 
 
@@ -497,8 +508,8 @@ class InlineDiffField(Field):
                                   template_pack=template_pack, attrs=self.attrs)
             if f.value_from_object(instance) != initial.get(field, None):
                 current_val = detail.get_field_result(f.name).val
-                html += ('<div class="diff_field" rel="tooltip"><textarea class="org-data" style="display:none;">%s</textarea>%s</div>'
-                         % (_('Current: %s') % current_val, f_html))
+                html += ('<div class="diff_field" rel="tooltip"><textarea class="org-data" style="display:none;">%s'
+                         '</textarea>%s</div>' % (_('Current: %s') % current_val, f_html))
             else:
                 html += f_html
         return html
@@ -542,14 +553,13 @@ class InlineRevisionPlugin(BaseAdminPlugin):
                 initial.append(initial_data)
         for related_version in related_versions.values():
             initial_row = related_version.field_dict
-            pk_name = ContentType.objects.get_for_id(
-                related_version.content_type_id).model_class()._meta.pk.name
+            pk_name = ContentType.objects.get_for_id(related_version.content_type_id).model_class()._meta.pk.name
             del initial_row[pk_name]
             initial.append(initial_row)
         # Reconstruct the forms with the new revision data.
         formset.initial = initial
         formset.forms = [formset._construct_form(
-            n) for n in xrange(len(initial))]
+            n) for n in range(len(initial))]
         # Hack the formset to force a save of everything.
 
         def get_changed_data(form):
@@ -566,7 +576,8 @@ class InlineRevisionPlugin(BaseAdminPlugin):
             helper = formset.helper
             cls_str = str if six.PY3 else basestring
             helper.filter(cls_str).wrap(InlineDiffField)
-            fake_admin_class = type(str('%s%sFakeAdmin' % (self.opts.app_label, self.opts.model_name)), (object, ), {'model': self.model})
+            fake_admin_class = type(str('%s%sFakeAdmin' % (self.opts.app_label, self.opts.model_name)),
+                                    (object, ), {'model': self.model})
             for form in formset.forms:
                 instance = form.instance
                 if instance.pk:
@@ -584,6 +595,7 @@ class VersionInline(object):
     model = Version
     extra = 0
     style = 'accordion'
+
 
 class ReversionAdmin(object):
     model_icon = 'fa fa-exchange'

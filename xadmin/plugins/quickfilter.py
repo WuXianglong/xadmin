@@ -1,14 +1,8 @@
-'''
-Created on Mar 26, 2014
-
-@author: LAB_ADM
-'''
-from future.utils import iteritems
-from django.utils import six
 from django.utils.translation import ugettext_lazy as _
 from xadmin.filters import manager,MultiSelectFieldListFilter
 from xadmin.plugins.filters import *
 from xadmin.util import is_related_field
+
 
 @manager.register
 class QuickFilterMultiSelectFieldListFilter(MultiSelectFieldListFilter):
@@ -19,6 +13,7 @@ class QuickFilterMultiSelectFieldListFilter(MultiSelectFieldListFilter):
      
     """
     template = 'xadmin/filters/quickfilter.html'
+
 
 class QuickFilterPlugin(BaseAdminPlugin):
     """ Add a filter menu to the left column of the page """
@@ -81,7 +76,8 @@ class QuickFilterPlugin(BaseAdminPlugin):
         return clean_lookup in self.list_quick_filter
  
     def get_list_queryset(self, queryset):
-        lookup_params = dict([(smart_str(k)[len(FILTER_PREFIX):], v) for k, v in self.admin_view.params.items() if smart_str(k).startswith(FILTER_PREFIX) and v != ''])
+        lookup_params = dict([(smart_str(k)[len(FILTER_PREFIX):], v) for k, v in self.admin_view.params.items()
+                              if smart_str(k).startswith(FILTER_PREFIX) and v != ''])
         for p_key, p_val in iteritems(lookup_params):
             if p_val == "False":
                 lookup_params[p_key] = False
@@ -92,7 +88,9 @@ class QuickFilterPlugin(BaseAdminPlugin):
  
         # for clean filters
         self.admin_view.quickfilter['has_query_param'] = bool(lookup_params)
-        self.admin_view.quickfilter['clean_query_url'] = self.admin_view.get_query_string(remove=[k for k in self.request.GET.keys() if k.startswith(FILTER_PREFIX)])
+        self.admin_view.quickfilter['clean_query_url'] = self.admin_view.get_query_string(
+            remove=[k for k in self.request.GET.keys() if k.startswith(FILTER_PREFIX)]
+        )
  
         # Normalize the types of keys
         if not self.free_query_filter:
@@ -118,7 +116,7 @@ class QuickFilterPlugin(BaseAdminPlugin):
                         field_limit = list_quick_filter['limit']
                     if 'sort' in list_quick_filter and callable(list_quick_filter['sort']):
                         sort_key = list_quick_filter['sort']
-                    if 'cache' in list_quick_filter and type(list_quick_filter)==dict:
+                    if 'cache' in list_quick_filter and type(list_quick_filter) == dict:
                         cache_config = list_quick_filter['cache']
                         
                 else:        
@@ -128,13 +126,16 @@ class QuickFilterPlugin(BaseAdminPlugin):
                     field_path = field
                     field_parts = get_fields_from_path(self.model, field_path)
                     field = field_parts[-1]
-                spec = QuickFilterMultiSelectFieldListFilter(field, self.request, lookup_params,self.model, self.admin_view, field_path=field_path,field_order_by=field_order_by,field_limit=field_limit,sort_key=sort_key,cache_config=cache_config)
+                spec = QuickFilterMultiSelectFieldListFilter(field, self.request, lookup_params, self.model,
+                                                             self.admin_view, field_path=field_path,
+                                                             field_order_by=field_order_by, field_limit=field_limit,
+                                                             sort_key=sort_key, cache_config=cache_config)
                  
                 if len(field_parts)>1:
                     spec.title = "%s %s"%(field_parts[-2].name,spec.title) 
                  
                 # Check if we need to use distinct()
-                use_distinct = True#(use_distinct orlookup_needs_distinct(self.opts, field_path))
+                use_distinct = True  # (use_distinct orlookup_needs_distinct(self.opts, field_path))
                 if spec and spec.has_output():
                     try:
                         new_qs = spec.do_filte(queryset)

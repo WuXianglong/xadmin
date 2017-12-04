@@ -56,9 +56,9 @@ class WidgetTypeSelect(forms.Widget):
         else:
             selected_html = ''
         return (u'<li%s><a onclick="' +
-                'javascript:$(this).parent().parent().find(\'>li\').removeClass(\'active\');$(this).parent().addClass(\'active\');' +
-                '$(\'#%s_input\').attr(\'value\', \'%s\')' % (id, widget.widget_type) +
-                '"><h4><i class="%s"></i> %s</h4><p>%s</p></a></li>') % (
+                'javascript:$(this).parent().parent().find(\'>li\').removeClass(\'active\');'
+                '$(this).parent().addClass(\'active\');$(\'#%s_input\').attr(\'value\', '
+                '\'%s\')' % (id, widget.widget_type) + '"><h4><i class="%s"></i> %s</h4><p>%s</p></a></li>') % (
                     selected_html,
                     widget.widget_icon,
                     widget.widget_title or widget.widget_type,
@@ -553,7 +553,8 @@ class Dashboard(CommAdminView):
                 widgets = []
 
                 if portal_pos:
-                    user_widgets = dict([(uw.id, uw) for uw in UserWidget.objects.filter(user=self.user, page_id=self.get_page_id())])
+                    user_widgets = dict([(uw.id, uw) for uw in UserWidget.objects.filter(user=self.user,
+                                                                                         page_id=self.get_page_id())])
                     for col in portal_pos.split('|'):
                         ws = []
                         for wid in col.split(','):
@@ -582,8 +583,10 @@ class Dashboard(CommAdminView):
             'portal_key': self.get_portal_key(),
             'columns': [('col-sm-%d' % int(12 / len(self.widgets)), ws) for ws in self.widgets],
             'has_add_widget_permission': self.has_model_perm(UserWidget, 'add') and self.widget_customiz,
-            'add_widget_url': self.get_admin_url('%s_%s_add' % (UserWidget._meta.app_label, UserWidget._meta.model_name)) +
-            "?user=%s&page_id=%s&_redirect=%s" % (self.user.id, self.get_page_id(), urlquote(self.request.get_full_path()))
+            'add_widget_url': self.get_admin_url('%s_%s_add' % (UserWidget._meta.app_label,
+                                                                UserWidget._meta.model_name)) +
+            "?user=%s&page_id=%s&_redirect=%s" % (self.user.id, self.get_page_id(),
+                                                  urlquote(self.request.get_full_path()))
         }
         context = super(Dashboard, self).get_context()
         context.update(new_context)
@@ -607,7 +610,8 @@ class Dashboard(CommAdminView):
                         user=self.user, page_id=self.get_page_id(), id=widget_id)
                     widget.delete()
                     try:
-                        portal_pos = UserSettings.objects.get(user=self.user, key="dashboard:%s:pos" % self.get_page_id())
+                        portal_pos = UserSettings.objects.get(user=self.user,
+                                                              key="dashboard:%s:pos" % self.get_page_id())
                         pos = [[w for w in col.split(',') if w != str(
                             widget_id)] for col in portal_pos.value.split('|')]
                         portal_pos.value = '|'.join([','.join(col) for col in pos])

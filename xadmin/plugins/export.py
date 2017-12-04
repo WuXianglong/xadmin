@@ -45,7 +45,8 @@ class ExportMenuPlugin(BaseAdminPlugin):
     def block_top_toolbar(self, context, nodes):
         if self.list_export:
             context.update({
-                'show_export_all': self.admin_view.paginator.count > self.admin_view.list_per_page and not ALL_VAR in self.admin_view.request.GET,
+                'show_export_all': (self.admin_view.paginator.count > self.admin_view.list_per_page and
+                                    ALL_VAR not in self.admin_view.request.GET),
                 'form_params': self.admin_view.get_form_params({'_do_': 'export'}, ('export_type',)),
                 'export_types': [{'type': et, 'name': self.export_names[et]} for et in self.list_export],
             })
@@ -84,7 +85,7 @@ class ExportPlugin(BaseAdminPlugin):
         rows = context['results']
 
         new_rows = [[self._format_value(o) for o in
-            filter(lambda c:getattr(c, 'export', False), r.cells)] for r in rows]
+                    filter(lambda c:getattr(c, 'export', False), r.cells)] for r in rows]
         new_rows.insert(0, [force_text(c.text) for c in context['result_headers'].cells if c.export])
         return new_rows
 
@@ -98,11 +99,14 @@ class ExportPlugin(BaseAdminPlugin):
         book = xlsxwriter.Workbook(output)
         sheet = book.add_worksheet(
             u"%s %s" % (_(u'Sheet'), force_text(model_name)))
-        styles = {'datetime': book.add_format({'num_format': 'yyyy-mm-dd hh:mm:ss'}),
-                  'date': book.add_format({'num_format': 'yyyy-mm-dd'}),
-                  'time': book.add_format({'num_format': 'hh:mm:ss'}),
-                  'header': book.add_format({'font': 'name Times New Roman', 'color': 'red', 'bold': 'on', 'num_format': '#,##0.00'}),
-                  'default': book.add_format()}
+        styles = {
+            'datetime': book.add_format({'num_format': 'yyyy-mm-dd hh:mm:ss'}),
+            'date': book.add_format({'num_format': 'yyyy-mm-dd'}),
+            'time': book.add_format({'num_format': 'hh:mm:ss'}),
+            'header': book.add_format({'font': 'name Times New Roman', 'color': 'red',
+                                       'bold': 'on', 'num_format': '#,##0.00'}),
+            'default': book.add_format(),
+        }
 
         if not export_header:
             datas = datas[1:]
@@ -135,11 +139,13 @@ class ExportPlugin(BaseAdminPlugin):
         book = xlwt.Workbook(encoding='utf8')
         sheet = book.add_sheet(
             u"%s %s" % (_(u'Sheet'), force_text(model_name)))
-        styles = {'datetime': xlwt.easyxf(num_format_str='yyyy-mm-dd hh:mm:ss'),
-                  'date': xlwt.easyxf(num_format_str='yyyy-mm-dd'),
-                  'time': xlwt.easyxf(num_format_str='hh:mm:ss'),
-                  'header': xlwt.easyxf('font: name Times New Roman, color-index red, bold on', num_format_str='#,##0.00'),
-                  'default': xlwt.Style.default_style}
+        styles = {
+            'datetime': xlwt.easyxf(num_format_str='yyyy-mm-dd hh:mm:ss'),
+            'date': xlwt.easyxf(num_format_str='yyyy-mm-dd'),
+            'time': xlwt.easyxf(num_format_str='hh:mm:ss'),
+            'header': xlwt.easyxf('font: name Times New Roman, color-index red, bold on', num_format_str='#,##0.00'),
+            'default': xlwt.Style.default_style,
+        }
 
         if not export_header:
             datas = datas[1:]
@@ -224,8 +230,7 @@ class ExportPlugin(BaseAdminPlugin):
             content_type="%s; charset=UTF-8" % self.export_mimes[file_type])
 
         file_name = self.opts.verbose_name.replace(' ', '_')
-        response['Content-Disposition'] = ('attachment; filename=%s.%s' % (
-            file_name, file_type)).encode('utf-8')
+        response['Content-Disposition'] = ('attachment; filename=%s.%s' % (file_name, file_type)).encode()
 
         response.write(getattr(self, 'get_%s_export' % file_type)(context))
         return response

@@ -149,7 +149,8 @@ class BaseAdminObject(object):
 
     def has_model_perm(self, model, name, user=None):
         user = user or self.user
-        return user.has_perm(self.get_model_perm(model, name)) or (name == 'view' and self.has_model_perm(model, 'change', user))
+        return user.has_perm(self.get_model_perm(model, name)) or (name == 'view' and
+                                                                   self.has_model_perm(model, 'change', user))
 
     def get_query_string(self, new_params=None, remove=None):
         if new_params is None:
@@ -368,7 +369,7 @@ class CommAdminView(BaseAdminView):
                     app_title = self.apps_label_title[app_label.lower()]
                 else:
                     app_title = smart_text(apps.get_app_config(app_label).verbose_name)
-                #find app icon
+                # find app icon
                 if app_label.lower() in self.apps_icons:
                     app_icon = self.apps_icons[app_label.lower()]
 
@@ -467,16 +468,13 @@ class CommAdminView(BaseAdminView):
     def get_model_icon(self, model):
         icon = self.global_models_icon.get(model)
         if icon is None and model in self.admin_site._registry:
-            icon = getattr(self.admin_site._registry[model],
-                           'model_icon', self.default_model_icon)
+            icon = getattr(self.admin_site._registry[model], 'model_icon', self.default_model_icon)
         return icon
 
     @filter_hook
     def get_breadcrumb(self):
-        return [{
-            'url': self.get_admin_url('index'),
-            'title': _('Home')
-            }]
+        return [{'url': self.get_admin_url('index'), 'title': _('Home')}]
+
 
 class ModelAdminView(CommAdminView):
 

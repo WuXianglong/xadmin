@@ -19,6 +19,7 @@ from xadmin.util import quote
 
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
+
 def add_view_permissions(sender, **kwargs):
     """
     This syncdb hooks takes care of adding a view permission too all our
@@ -35,7 +36,6 @@ def add_view_permissions(sender, **kwargs):
             Permission.objects.create(content_type=content_type,
                                       codename=codename,
                                       name="Can view %s" % content_type.name)
-            #print "Added view permission for %s" % content_type.name
 
 # check for all our view permissions after a syncdb
 post_migrate.connect(add_view_permissions)

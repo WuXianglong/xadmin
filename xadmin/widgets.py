@@ -24,15 +24,17 @@ class AdminDateWidget(forms.DateInput):
         return vendor('datepicker.js', 'datepicker.css', 'xadmin.widget.datetime.js')
 
     def __init__(self, attrs=None, format=None):
-        final_attrs = {'class': 'date-field', 'size': '10'}
+        final_attrs = {'class': 'date-field form-control', 'size': '10'}
         if attrs is not None:
             final_attrs.update(attrs)
         super(AdminDateWidget, self).__init__(attrs=final_attrs, format=format)
 
     def render(self, name, value, attrs=None):
         input_html = super(AdminDateWidget, self).render(name, value, attrs)
-        return mark_safe('<div class="input-group date bootstrap-datepicker"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>%s'
-                         '<span class="input-group-btn"><button class="btn btn-default" type="button">%s</button></span></div>' % (input_html, _(u'Today')))
+        return mark_safe('<div class="input-group date bootstrap-datepicker"><span class="input-group-addon">'
+                         '<i class="fa fa-calendar"></i></span>%s<span class="input-group-btn">'
+                         '<button class="btn btn-default" type="button">%s</button></span></div>' % (input_html,
+                                                                                                     _(u'Today')))
 
 
 class AdminTimeWidget(forms.TimeInput):
@@ -42,15 +44,17 @@ class AdminTimeWidget(forms.TimeInput):
         return vendor('datepicker.js', 'clockpicker.js', 'clockpicker.css', 'xadmin.widget.datetime.js')
 
     def __init__(self, attrs=None, format=None):
-        final_attrs = {'class': 'time-field', 'size': '8'}
+        final_attrs = {'class': 'time-field form-control', 'size': '8'}
         if attrs is not None:
             final_attrs.update(attrs)
         super(AdminTimeWidget, self).__init__(attrs=final_attrs, format=format)
 
     def render(self, name, value, attrs=None):
         input_html = super(AdminTimeWidget, self).render(name, value, attrs)
-        return mark_safe('<div class="input-group time bootstrap-clockpicker"><span class="input-group-addon"><i class="fa fa-clock-o">'
-                         '</i></span>%s<span class="input-group-btn"><button class="btn btn-default" type="button">%s</button></span></div>' % (input_html, _(u'Now')))
+        return mark_safe('<div class="input-group time bootstrap-clockpicker"><span class="input-group-addon">'
+                         '<i class="fa fa-clock-o"></i></span>%s<span class="input-group-btn">'
+                         '<button class="btn btn-default" type="button">%s</button></span></div>' % (input_html,
+                                                                                                     _(u'Now')))
 
 
 class AdminSelectWidget(forms.Select):
@@ -75,10 +79,13 @@ class AdminSplitDateTime(forms.SplitDateTimeWidget):
         if DJANGO_11:
             input_html = [ht for ht in super(AdminSplitDateTime, self).render(name, value, attrs).split('\n') if ht != '']
             # return input_html
-            return mark_safe('<div class="datetime clearfix"><div class="input-group date bootstrap-datepicker"><span class="input-group-addon"><i class="fa fa-calendar"></i></span>%s'
-                             '<span class="input-group-btn"><button class="btn btn-default" type="button">%s</button></span></div>'
-                             '<div class="input-group time bootstrap-clockpicker"><span class="input-group-addon"><i class="fa fa-clock-o">'
-                             '</i></span>%s<span class="input-group-btn"><button class="btn btn-default" type="button">%s</button></span></div></div>' % (input_html[0], _(u'Today'), input_html[1], _(u'Now')))
+            return mark_safe('<div class="datetime clearfix"><div class="input-group date bootstrap-datepicker">'
+                             '<span class="input-group-addon"><i class="fa fa-calendar"></i></span>%s'
+                             '<span class="input-group-btn"><button class="btn btn-default" type="button">%s</button>'
+                             '</span></div><div class="input-group time bootstrap-clockpicker">'
+                             '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>%s'
+                             '<span class="input-group-btn"><button class="btn btn-default" type="button">%s</button>'
+                             '</span></div></div>' % (input_html[0], _(u'Today'), input_html[1], _(u'Now')))
         else:
             return super(AdminSplitDateTime, self).render(name, value, attrs)
 
@@ -152,9 +159,11 @@ class AdminCheckboxSelect(forms.CheckboxSelectMultiple):
             option_label = conditional_escape(force_text(option_label))
 
             if final_attrs.get('inline', False):
-                output.append(u'<label%s class="checkbox-inline">%s %s</label>' % (label_for, rendered_cb, option_label))
+                output.append(u'<label%s class="checkbox-inline">%s %s</label>' % (label_for, rendered_cb,
+                                                                                   option_label))
             else:
-                output.append(u'<div class="checkbox"><label%s>%s %s</label></div>' % (label_for, rendered_cb, option_label))
+                output.append(u'<div class="checkbox"><label%s>%s %s</label></div>' % (label_for, rendered_cb,
+                                                                                       option_label))
         return mark_safe(u'\n'.join(output))
 
 

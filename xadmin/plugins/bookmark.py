@@ -26,7 +26,6 @@ csrf_protect_m = method_decorator(csrf_protect)
 
 class BookmarkPlugin(BaseAdminPlugin):
 
-    # [{'title': "Female", 'query': {'gender': True}, 'order': ('-age'), 'cols': ('first_name', 'age', 'phones'), 'search': 'Tom'}]
     list_bookmarks = []
     show_bookmarks = True
 
@@ -42,23 +41,14 @@ class BookmarkPlugin(BaseAdminPlugin):
 
         bookmarks = []
 
-        current_qs = '&'.join([
-                '%s=%s' % (k, v)
-                for k, v in sorted(filter(
-                        lambda i: bool(i[1] and (
-                                i[0] in (COL_LIST_VAR, ORDER_VAR, SEARCH_VAR)
-                                or i[0].startswith(FILTER_PREFIX)
-                                or i[0].startswith(RELATE_PREFIX)
-                                )),
-                        self.request.GET.items()
-                        ))
-                ])
+        current_qs = '&'.join(['%s=%s' % (k, v) for k, v in sorted(filter(
+            lambda i: bool(i[1] and (i[0] in (COL_LIST_VAR, ORDER_VAR, SEARCH_VAR) or i[0].startswith(FILTER_PREFIX)
+                                     or i[0].startswith(RELATE_PREFIX))), self.request.GET.items()))])
 
         model_info = (self.opts.app_label, self.opts.model_name)
         has_selected = False
         menu_title = _(u"Bookmark")
-        list_base_url = reverse('xadmin:%s_%s_changelist' %
-                                model_info, current_app=self.admin_site.name)
+        list_base_url = reverse('xadmin:%s_%s_changelist' % model_info, current_app=self.admin_site.name)
 
         # local bookmarks
         for bk in self.list_bookmarks:
@@ -73,18 +63,16 @@ class BookmarkPlugin(BaseAdminPlugin):
                 params[COL_LIST_VAR] = '.'.join(bk['cols'])
             if 'search' in bk:
                 params[SEARCH_VAR] = bk['search']
+
             def check_item(i):
-                return bool(i[1]) or i[1] == False
-            bk_qs = '&'.join([
-                    '%s=%s' % (k, v)
-                    for k, v in sorted(filter(check_item, params.items()))
-                    ])
+                return bool(i[1]) or not i[1]
+
+            bk_qs = '&'.join(['%s=%s' % (k, v) for k, v in sorted(filter(check_item, params.items()))])
 
             url = list_base_url + '?' + bk_qs
             selected = (current_qs == bk_qs)
 
-            bookmarks.append(
-                {'title': title, 'selected': selected, 'url': url})
+            bookmarks.append({'title': title, 'selected': selected, 'url': url})
             if selected:
                 menu_title = title
                 has_selected = True
@@ -111,8 +99,7 @@ class BookmarkPlugin(BaseAdminPlugin):
                 menu_title = bk.title
                 has_selected = True
 
-        post_url = reverse('xadmin:%s_%s_bookmark' % model_info,
-                           current_app=self.admin_site.name)
+        post_url = reverse('xadmin:%s_%s_bookmark' % model_info, current_app=self.admin_site.name)
 
         new_context = {
             'bk_menu_title': menu_title,
@@ -122,7 +109,7 @@ class BookmarkPlugin(BaseAdminPlugin):
             'bk_list_base_url': list_base_url,
             'bk_post_url': post_url,
             'has_add_permission_bookmark': self.admin_view.request.user.has_perm('xadmin.add_bookmark'),
-            'has_change_permission_bookmark': self.admin_view.request.user.has_perm('xadmin.change_bookmark')
+            'has_change_permission_bookmark': self.admin_view.request.user.has_perm('xadmin.change_bookmark'),
         }
         context.update(new_context)
         return context
@@ -173,7 +160,6 @@ class BookmarkAdmin(object):
         if not self.user.is_superuser:
             list_display.remove('user')
         return list_display
-
 
     def has_change_permission(self, obj=None):
         if not obj or self.user.is_superuser:

@@ -7,6 +7,7 @@ from xadmin.util import static, vendor as util_vendor
 
 register = Library()
 
+
 @register.simple_tag(takes_context=True)
 def view_block(context, block_name, *args, **kwargs):
     if 'admin_view' not in context:
@@ -27,6 +28,7 @@ def view_block(context, block_name, *args, **kwargs):
         return mark_safe(''.join(nodes))
     else:
         return ""
+
 
 @register.filter
 def admin_urlname(value, arg):

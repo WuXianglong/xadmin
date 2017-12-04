@@ -58,7 +58,8 @@ class ChartWidget(ModelBaseWidget):
 
     def context(self, context):
         context.update({
-            'charts': [{"name": name, "title": v['title'], 'url': self.get_chart_url(name, v)} for name, v in self.charts.items()],
+            'charts': [{"name": name, "title": v['title'], 'url': self.get_chart_url(name, v)}
+                       for name, v in self.charts.items()],
         })
 
     # Media
@@ -96,7 +97,8 @@ class ChartsPlugin(BaseAdminPlugin):
     # Block Views
     def block_results_top(self, context, nodes):
         context.update({
-            'charts': [{"name": name, "title": v['title'], 'url': self.get_chart_url(name, v)} for name, v in self.data_charts.items()],
+            'charts': [{"name": name, "title": v['title'], 'url': self.get_chart_url(name, v)}
+                       for name, v in self.data_charts.items()],
         })
         nodes.append(loader.render_to_string('xadmin/blocks/model_list.results_top.charts.html',
                                              context=get_context_dict(context)))

@@ -20,6 +20,7 @@ from xadmin.views.detail import DetailAdminUtil
 
 from .base import CommAdminView, filter_hook, csrf_protect_m
 
+
 class FormAdminView(CommAdminView):
     form = forms.ModelForm
     title = None

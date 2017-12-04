@@ -36,7 +36,8 @@ class AggregationPlugin(BaseAdminPlugin):
                     item.text = ""
                 else:
                     item.text = display_for_field(obj[key], f)
-                    item.wraps.append('%%s<span class="aggregate_title label label-info">%s</span>' % AGGREGATE_TITLE[agg_method])
+                    item.wraps.append('%%s<span class="aggregate_title label label-info">%s</span>' %
+                                      AGGREGATE_TITLE[agg_method])
                     item.classes.append(agg_method)
             except FieldDoesNotExist:
                 item.text = ""
@@ -61,8 +62,7 @@ class AggregationPlugin(BaseAdminPlugin):
 
     # Media
     def get_media(self, media):
-        media.add_css({'screen': [self.static(
-            'xadmin/css/xadmin.plugin.aggregation.css'), ]})
+        media.add_css({'screen': [self.static('xadmin/css/xadmin.plugin.aggregation.css'), ]})
         return media
 
 

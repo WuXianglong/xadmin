@@ -1,5 +1,3 @@
-
-
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.db import models
@@ -14,7 +12,7 @@ class DetailsPlugin(BaseAdminPlugin):
     show_all_rel_details = True
 
     def result_item(self, item, obj, field_name, row):
-        if (self.show_all_rel_details or (field_name in self.show_detail_fields)):
+        if self.show_all_rel_details or (field_name in self.show_detail_fields):
             rel_obj = None
             if hasattr(item.field, 'rel') and isinstance(item.field.rel, models.ManyToOneRel):
                 rel_obj = getattr(obj, field_name)
@@ -48,7 +46,8 @@ class DetailsPlugin(BaseAdminPlugin):
                                 args=(getattr(rel_obj, opts.pk.attname),))
                         else:
                             edit_url = ''
-                        item.btns.append('<a data-res-uri="%s" data-edit-uri="%s" class="details-handler" rel="tooltip" title="%s"><i class="fa fa-info-circle"></i></a>'
+                        item.btns.append('<a data-res-uri="%s" data-edit-uri="%s" class="details-handler" '
+                                         'rel="tooltip" title="%s"><i class="fa fa-info-circle"></i></a>'
                                          % (item_res_uri, edit_url, _(u'Details of %s') % str(rel_obj)))
                 except NoReverseMatch:
                     pass

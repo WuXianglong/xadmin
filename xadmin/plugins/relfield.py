@@ -48,15 +48,15 @@ class ForeignKeySearchWidget(forms.Widget):
 
         output = [format_html('<select{0}>', flatatt(final_attrs))]
         if value:
-            output.append(format_html('<option selected="selected" value="{0}">{1}</option>', value, self.label_for_value(value)))
+            output.append(format_html('<option selected="selected" value="{0}">{1}</option>', value,
+                                      self.label_for_value(value)))
         output.append('</select>')
         return mark_safe('\n'.join(output))
 
     def label_for_value(self, value):
         key = self.rel.get_related_field().name
         try:
-            obj = self.rel.to._default_manager.using(
-                self.db).get(**{key: value})
+            obj = self.rel.to._default_manager.using(self.db).get(**{key: value})
             return '%s' % escape(Truncator(obj).words(14, truncate='...'))
         except (ValueError, self.rel.to.DoesNotExist):
             return ""
@@ -86,8 +86,9 @@ class RelateFieldPlugin(BaseAdminPlugin):
             if (db_field.remote_field.to in self.admin_view.admin_site._registry) and \
                     self.has_model_perm(db_field.remote_field.to, 'view'):
                 db = kwargs.get('using')
-                return dict(attrs or {},
-                            widget=(style == 'fk-ajax' and ForeignKeySearchWidget or ForeignKeySelectWidget)(db_field.remote_field, self.admin_view, using=db))
+                return dict(attrs or {}, widget=(style == 'fk-ajax' and ForeignKeySearchWidget or
+                                                 ForeignKeySelectWidget)(db_field.remote_field,
+                                                                         self.admin_view, using=db))
         return attrs
 
 site.register_plugin(RelateFieldPlugin, ModelFormAdminView)

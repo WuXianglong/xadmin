@@ -2,7 +2,7 @@ import copy
 import inspect
 from django import forms
 from django.forms.formsets import all_valid, DELETION_FIELD_NAME
-from django.forms.models import inlineformset_factory, BaseInlineFormSet, modelform_defines_fields
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.contrib.contenttypes.forms import BaseGenericInlineFormSet, generic_inlineformset_factory
 from django.template import loader
 from django.template.loader import render_to_string
@@ -193,7 +193,8 @@ class InlineModelAdmin(ModelFormAdminView):
         helper = FormHelper()
         helper.form_tag = False
         helper.include_media = False
-        # override form method to prevent render csrf_token in inline forms, see template 'bootstrap/whole_uni_form.html'
+        # override form method to prevent render csrf_token in inline forms,
+        # see template 'bootstrap/whole_uni_form.html'
         helper.form_method = 'get'
 
         style = style_manager.get_style(
@@ -352,7 +353,7 @@ class Inline(Fieldset):
     def __init__(self, rel_model):
         self.model = rel_model
         self.fields = []
-        super(Inline,self).__init__(legend="")
+        super(Inline, self).__init__(legend="")
 
     def render(self, form, form_style, context, template_pack=TEMPLATE_PACK, **kwargs):
         return ""
@@ -452,8 +453,7 @@ class InlineFormsetPlugin(BaseAdminPlugin):
         for fs in self.formsets:
             media = media + fs.media
         if self.formsets:
-            media = media + self.vendor(
-                'xadmin.plugin.formset.js', 'xadmin.plugin.formset.css')
+            media = media + self.vendor('xadmin.plugin.formset.js', 'xadmin.plugin.formset.css')
         return media
 
     def _get_detail_formset_instance(self, inline):
@@ -463,13 +463,15 @@ class InlineFormsetPlugin(BaseAdminPlugin):
             replace_field_to_value(formset.helper.layout, inline)
             model = inline.model
             opts = model._meta
-            fake_admin_class = type(str('%s%sFakeAdmin' % (opts.app_label, opts.model_name)), (object, ), {'model': model})
+            fake_admin_class = type(str('%s%sFakeAdmin' % (opts.app_label, opts.model_name)),
+                                    (object, ), {'model': model})
             for form in formset.forms:
                 instance = form.instance
                 if instance.pk:
                     form.detail = self.get_view(
                         DetailAdminUtil, fake_admin_class, instance)
         return formset
+
 
 class DetailAdminUtil(DetailAdminView):
 

@@ -134,7 +134,7 @@ class UserFieldPlugin(BaseAdminPlugin):
 
     def get_form_datas(self, datas):
         if self.user_fields and 'data' in datas:
-            if hasattr(datas['data'],'_mutable') and not datas['data']._mutable:
+            if hasattr(datas['data'], '_mutable') and not datas['data']._mutable:
                 datas['data'] = datas['data'].copy()
             for f in self.user_fields:
                 datas['data'][f] = self.user.id
@@ -168,7 +168,8 @@ site.register_plugin(ModelPermissionPlugin, ModelAdminView)
 class AccountMenuPlugin(BaseAdminPlugin):
 
     def block_top_account_menu(self, context, nodes):
-        return '<li><a href="%s"><i class="fa fa-key"></i> %s</a></li>' % (self.get_admin_url('account_password'), _('Change Password'))
+        return '<li><a href="%s"><i class="fa fa-key"></i> %s</a></li>' % (self.get_admin_url('account_password'),
+                                                                           _('Change Password'))
 
 site.register_plugin(AccountMenuPlugin, CommAdminView)
 
@@ -262,7 +263,7 @@ class ChangeAccountPasswordView(ChangePasswordView):
             return self.get_response()
 
 
-user_model = settings.AUTH_USER_MODEL.lower().replace('.','/')
+user_model = settings.AUTH_USER_MODEL.lower().replace('.', '/')
 site.register_view(r'^%s/(.+)/password/$' % user_model,
                    ChangePasswordView, name='user_change_password')
 site.register_view(r'^account/password/$', ChangeAccountPasswordView,

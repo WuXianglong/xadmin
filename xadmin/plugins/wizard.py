@@ -66,7 +66,8 @@ class WizardFormPlugin(BaseAdminPlugin):
 
     # Plugin replace methods
     def init_request(self, *args, **kwargs):
-        if self.request.is_ajax() or ("_ajax" in self.request.GET) or not hasattr(self.request, 'session') or (args and not self.wizard_for_update):
+        if self.request.is_ajax() or ("_ajax" in self.request.GET) or not hasattr(self.request, 'session') or \
+                (args and not self.wizard_for_update):
             # update view
             return False
         return bool(self.wizard_form_list)
@@ -129,12 +130,12 @@ class WizardFormPlugin(BaseAdminPlugin):
             step = self.steps.current
         attrs = self.get_form_list()[step]
         if type(attrs) in (list, tuple):
-            return modelform_factory(self.model, form=forms.ModelForm,
-                                     fields=attrs, formfield_callback=self.admin_view.formfield_for_dbfield)
+            return modelform_factory(self.model, form=forms.ModelForm, fields=attrs,
+                                     formfield_callback=self.admin_view.formfield_for_dbfield)
         elif type(attrs) is dict:
             if attrs.get('fields', None):
-                return modelform_factory(self.model, form=forms.ModelForm,
-                                         fields=attrs['fields'], formfield_callback=self.admin_view.formfield_for_dbfield)
+                return modelform_factory(self.model, form=forms.ModelForm, fields=attrs['fields'],
+                                         formfield_callback=self.admin_view.formfield_for_dbfield)
             if attrs.get('callback', None):
                 callback = attrs['callback']
                 if callable(callback):

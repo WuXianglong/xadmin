@@ -41,14 +41,15 @@ class TopNavPlugin(BaseAdminPlugin):
                         })
                     except NoReverseMatch:
                         pass
-        return nodes.append(loader.render_to_string('xadmin/blocks/comm.top.topnav.html', {'search_models': search_models, 'search_name': SEARCH_VAR}))
+        return nodes.append(loader.render_to_string('xadmin/blocks/comm.top.topnav.html',
+                                                    {'search_models': search_models, 'search_name': SEARCH_VAR}))
 
     def block_top_navmenu(self, context, nodes):
         add_models = []
 
         site_name = self.admin_site.name
 
-        if self.global_add_models == None:
+        if self.global_add_models is None:
             models = self.admin_site._registry.keys()
         else:
             models = self.global_add_models
