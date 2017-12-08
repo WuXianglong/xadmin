@@ -20,25 +20,26 @@ from xadmin.util import quote
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
-def add_view_permissions(sender, **kwargs):
+def check_model_permissions(sender, **kwargs):
     """
-    This syncdb hooks takes care of adding a view permission too all our
+    This migrate hooks takes care of adding model permission too all our
     content types.
     """
     # for each of our content types
     for content_type in ContentType.objects.all():
-        # build our permission slug
-        codename = "view_%s" % content_type.model
+        for action in ('add', 'change', 'delete', 'view'):
+            # build our permission slug
+            codename = "%s_%s" % (action, content_type.model)
 
-        # if it doesn't exist..
-        if not Permission.objects.filter(content_type=content_type, codename=codename):
-            # add it
-            Permission.objects.create(content_type=content_type,
-                                      codename=codename,
-                                      name="Can view %s" % content_type.name)
+            # if it doesn't exist..
+            if not Permission.objects.filter(content_type=content_type, codename=codename):
+                # add it
+                Permission.objects.create(content_type=content_type,
+                                          codename=codename,
+                                          name="Can view %s" % content_type.name)
 
-# check for all our view permissions after a syncdb
-post_migrate.connect(add_view_permissions)
+# check for all our model permissions after a migrate
+post_migrate.connect(check_model_permissions)
 
 
 @python_2_unicode_compatible
