@@ -111,6 +111,7 @@ class ListAdminView(ModelAdminView):
     search_fields = ()
     paginator_class = Paginator
     ordering = None
+    show_model_fields = True
 
     # Change list templates
     object_list_template = None
@@ -374,6 +375,7 @@ class ListAdminView(ModelAdminView):
             'model_name': force_text(self.opts.verbose_name_plural),
             'title': self.title,
             'cl': self,
+            'show_model_fields': self.show_model_fields,
             'model_fields': model_fields,
             'clean_select_field_url': self.get_query_string(remove=[COL_LIST_VAR]),
             'has_add_permission': self.has_add_permission(),
