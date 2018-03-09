@@ -34,6 +34,7 @@
   <div class="content-toolbar btn-toolbar pull-right clearfix">
     {% view_block 'top_toolbar' %}
     {% block toolbar_column %}
+    {% if show_model_fields %}
     <div class="btn-group">
       <a class="dropdown-toggle btn btn-default btn-sm" data-toggle="dropdown" href="#">
         <i class="fa fa-list-alt"></i> {% trans "Columns" %} <span class="caret"></span>
@@ -48,6 +49,7 @@
         {% endfor %}
       </ul>
     </div>
+    {% endif %}
     {% endblock toolbar_column %}
     {% block toolbar_layouts %}
     <div class="btn-group layout-btns" data-toggle="buttons">
