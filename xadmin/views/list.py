@@ -112,6 +112,7 @@ class ListAdminView(ModelAdminView):
     paginator_class = Paginator
     ordering = None
     show_model_fields = True
+    show_display_link = True
 
     # Change list templates
     object_list_template = None
@@ -564,8 +565,8 @@ class ListAdminView(ModelAdminView):
             item.value = value
 
         # If list_display_links not defined, add the link tag to the first field
-        if (item.row['is_display_first'] and not self.list_display_links) \
-                or field_name in self.list_display_links:
+        if self.show_display_link and ((item.row['is_display_first'] and not self.list_display_links)
+                                       or field_name in self.list_display_links):
             item.row['is_display_first'] = False
             item.is_display_link = True
             if self.list_display_links_details:
